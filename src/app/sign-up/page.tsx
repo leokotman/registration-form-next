@@ -14,16 +14,19 @@ import {
   InputLabel,
   FormControl,
   Link,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Image from 'next/image';
 
 const socialMediaOptions = [
-  { label: "What's App", value: 'whatsapp' },
-  { label: 'Facebook', value: 'facebook' },
-  { label: 'Instagram', value: 'instagram' },
-  { label: 'Telegram', value: 'telegram' },
-  { label: 'LinkedIN', value: 'linkedin' },
+  { label: 'Telegram', value: 'telegram', placeholder: '@username' },
+  { label: "What's App", value: 'whatsapp', placeholder: '+333 999 999 99 99' },
+  { label: 'Facebook', value: 'facebook', placeholder: 'https://' },
+  { label: 'Instagram', value: 'instagram', placeholder: '@username' },
+  { label: 'LinkedIn', value: 'linkedin', placeholder: 'https://' },
 ];
 const STEPS = {
   email: 'email',
@@ -52,6 +55,7 @@ const styles = {
   heading: {
     fontSize: '2.125rem',
     fontWeight: 600,
+    margin: '20px 0 32px',
   },
   linkButton: {
     fontSize: '14px',
@@ -63,9 +67,10 @@ const styles = {
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
-  const [selectedSocial, setSelectedSocial] = useState(
-    socialMediaOptions[0].value
-  );
+  const [selectedSocial, setSelectedSocial] = useState({
+    value: socialMediaOptions[0].value,
+    placeholder: socialMediaOptions[0].placeholder,
+  });
   const [inputValue, setInputValue] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [currentStep, setCurrentStep] = useState(STEPS.email);
@@ -85,7 +90,12 @@ const SignUp = () => {
   };
 
   const handleSocialChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedSocial(event.target.value);
+    setSelectedSocial({
+      value: event.target.value,
+      placeholder:
+        socialMediaOptions.find((media) => media.value === event.target.value)
+          ?.placeholder ?? 'Your social media account',
+    });
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,7 +103,7 @@ const SignUp = () => {
   };
 
   return (
-    <Paper sx={styles.paper}>
+    <Paper sx={styles.paper} elevation={0}>
       <Box sx={styles.container}>
         <Image
           src="/assets/icons/logo.png"
@@ -120,6 +130,7 @@ const SignUp = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 variant="outlined"
+                type="email"
               />
 
               <Button
@@ -202,58 +213,70 @@ const SignUp = () => {
             </Box>
           </>
         ) : (
-          <>
-            <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-password">
-                Password
-              </InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-password"
-                type={showPassword ? 'text' : 'password'}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      onMouseUp={handleMouseUpPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Password"
+          <FormGroup sx={{ width: '100%' }}>
+            <Box display="flex" flexDirection="column" width="100%" gap={1}>
+              <FormControl sx={{ width: '100%' }} variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Пароль
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-password"
+                  type={showPassword ? 'text' : 'password'}
+                  fullWidth
+                  required
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        onMouseUp={handleMouseUpPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password"
+                />
+              </FormControl>
+
+              <TextField
+                select
+                fullWidth
+                value={selectedSocial.value}
+                onChange={handleSocialChange}
+              >
+                {socialMediaOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+
+              <TextField
+                fullWidth
+                placeholder={selectedSocial.placeholder}
+                value={inputValue}
+                onChange={handleInputChange}
+                sx={{ mb: 3 }}
+                helperText="Оставь свою соцсеть и получи WIXI токены в 50$"
               />
-            </FormControl>
 
-            <TextField
-              select
-              label="Social Media"
-              fullWidth
-              value={selectedSocial}
-              onChange={handleSocialChange}
-              sx={{ mb: 3 }}
-            >
-              {socialMediaOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-
-            <TextField
-              fullWidth
-              placeholder={
-                selectedSocial === 'whatsapp'
-                  ? '+333 999 999 99 99'
-                  : '@username'
-              }
-              value={inputValue}
-              onChange={handleInputChange}
-              sx={{ mb: 3 }}
-            />
-          </>
+              <FormControlLabel
+                control={<Checkbox color="warning" />}
+                label={
+                  <Typography>
+                    Я согласен с{' '}
+                    <Link>
+                      Условиями использования, Политикой конфиденциальности,
+                      AML/KYC процедурами, Использованием файлов Cookies
+                    </Link>
+                  </Typography>
+                }
+              />
+            </Box>
+          </FormGroup>
         )}
       </Box>
     </Paper>
