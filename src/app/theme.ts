@@ -12,6 +12,27 @@ const theme = createTheme({
     mode: 'dark',
     background: {
       default: colors.black,
+      paper: colors.black,
+    },
+    secondary: {
+      main: colors.white,
+    },
+    warning: {
+      main: colors.yellow,
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        contained: {
+          backgroundColor: colors.yellow,
+        },
+      },
+    },
+    MuiLink: {
+      defaultProps: {
+        underline: 'none',
+      },
     },
   },
 });
