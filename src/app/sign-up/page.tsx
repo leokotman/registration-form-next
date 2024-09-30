@@ -1,25 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Box,
-  TextField,
-  MenuItem,
-  Button,
-  Paper,
-  Typography,
-  IconButton,
-  InputAdornment,
-  OutlinedInput,
-  InputLabel,
-  FormControl,
-  Link,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-} from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Image from 'next/image';
+
+import { Box, Paper, Typography } from '@mui/material';
+
+import { EmailForm } from './components/EmailForm';
+import SocialButtons from './components/SocialButtons';
+import { Divider } from './components/Divider';
+import PasswordForm from './components/PasswordForm';
 
 const socialMediaOptions = [
   { label: 'Telegram', value: 'telegram', placeholder: '@username' },
@@ -28,6 +17,7 @@ const socialMediaOptions = [
   { label: 'Instagram', value: 'instagram', placeholder: '@username' },
   { label: 'LinkedIn', value: 'linkedin', placeholder: 'https://' },
 ];
+
 const STEPS = {
   email: 'email',
   password: 'password',
@@ -35,25 +25,38 @@ const STEPS = {
 
 const styles = {
   paper: {
-    width: 670,
-    height: 'clamp(95%, 700px, 800px)',
+    width: {
+      lg: 670,
+      md: '80%',
+      xs: '95%',
+    },
+    height: 700,
     margin: '0 auto',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '20px',
+    padding: {
+      lg: '20px',
+      xs: '6px',
+    },
   },
   container: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    width: '100%',
-    padding: 4,
+    width: {
+      lg: '57%',
+      md: '70%',
+      xs: '90%',
+    },
     borderRadius: 2,
   },
   heading: {
-    fontSize: '2.125rem',
+    fontSize: {
+      lg: '2.125rem',
+      xs: '1.5rem',
+    },
     fontWeight: 600,
     margin: '20px 0 32px',
   },
@@ -71,23 +74,10 @@ const SignUp = () => {
     value: socialMediaOptions[0].value,
     placeholder: socialMediaOptions[0].placeholder,
   });
-  const [inputValue, setInputValue] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [socialMediaValue, setSocialMediaValue] = useState('');
+  const [password, setPassword] = useState('');
+
   const [currentStep, setCurrentStep] = useState(STEPS.email);
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-  };
-
-  const handleMouseUpPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-  };
 
   const handleSocialChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedSocial({
@@ -96,10 +86,6 @@ const SignUp = () => {
         socialMediaOptions.find((media) => media.value === event.target.value)
           ?.placeholder ?? 'Your social media account',
     });
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
   };
 
   return (
@@ -117,166 +103,25 @@ const SignUp = () => {
 
         {currentStep === STEPS.email ? (
           <>
-            <Box
-              display="flex"
-              flexDirection="column"
-              gap="20px"
-              width="100%"
-              justifyContent="center"
-            >
-              <TextField
-                label="Email"
-                fullWidth
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                variant="outlined"
-                type="email"
-              />
+            <EmailForm
+              email={email}
+              setEmail={setEmail}
+              onGoNext={() => setCurrentStep(STEPS.password)}
+            />
 
-              <Button
-                variant="contained"
-                fullWidth
-                onClick={() => setCurrentStep(STEPS.password)}
-              >
-                Продолжить
-              </Button>
-              <Typography align="center">
-                Уже есть аккаунт?
-                <Link href="/sign-in" padding={1}>
-                  Войти
-                </Link>
-              </Typography>
-            </Box>
+            <Divider text="Или" />
 
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                width: '100%',
-                margin: '32px 20px',
-              }}
-            >
-              <Box
-                sx={{
-                  height: '1px',
-                  backgroundColor: 'grey',
-                  flex: 1,
-                }}
-              />
-
-              <Typography
-                sx={{
-                  padding: '0 16px',
-                  color: 'grey',
-                }}
-              >
-                Или
-              </Typography>
-
-              <Box
-                sx={{
-                  height: '1px',
-                  backgroundColor: 'grey',
-                  flex: 1,
-                }}
-              />
-            </Box>
-
-            <Box display="flex" flexDirection="column" gap={1} width="100%">
-              <Button variant="outlined" sx={{ gap: 3 }} fullWidth>
-                <Image
-                  src="/assets/icons/facebook.svg"
-                  width={24}
-                  height={24}
-                  alt="facebook-icon"
-                />
-                <Link sx={styles.linkButton}>Продолжить с Facebook</Link>
-              </Button>
-              <Button variant="outlined" sx={{ gap: 3 }} fullWidth>
-                <Image
-                  src="/assets/icons/google.svg"
-                  width={24}
-                  height={24}
-                  alt="google-icon"
-                />
-                <Link sx={styles.linkButton}>Продолжить с Google</Link>
-              </Button>
-              <Button variant="outlined" sx={{ gap: 3 }} fullWidth>
-                <Image
-                  src="/assets/icons/apple.svg"
-                  width={24}
-                  height={24}
-                  alt="apple-icon"
-                />
-                <Link sx={styles.linkButton}>Продолжить с Apple</Link>
-              </Button>
-            </Box>
+            <SocialButtons />
           </>
         ) : (
-          <FormGroup sx={{ width: '100%' }}>
-            <Box display="flex" flexDirection="column" width="100%" gap={1}>
-              <FormControl sx={{ width: '100%' }} variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-password">
-                  Пароль
-                </InputLabel>
-                <OutlinedInput
-                  id="outlined-adornment-password"
-                  type={showPassword ? 'text' : 'password'}
-                  fullWidth
-                  required
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        onMouseUp={handleMouseUpPassword}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                  label="Password"
-                />
-              </FormControl>
-
-              <TextField
-                select
-                fullWidth
-                value={selectedSocial.value}
-                onChange={handleSocialChange}
-              >
-                {socialMediaOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-
-              <TextField
-                fullWidth
-                placeholder={selectedSocial.placeholder}
-                value={inputValue}
-                onChange={handleInputChange}
-                sx={{ mb: 3 }}
-                helperText="Оставь свою соцсеть и получи WIXI токены в 50$"
-              />
-
-              <FormControlLabel
-                control={<Checkbox color="warning" />}
-                label={
-                  <Typography>
-                    Я согласен с{' '}
-                    <Link>
-                      Условиями использования, Политикой конфиденциальности,
-                      AML/KYC процедурами, Использованием файлов Cookies
-                    </Link>
-                  </Typography>
-                }
-              />
-            </Box>
-          </FormGroup>
+          <PasswordForm
+            selectedSocial={selectedSocial}
+            onSocialChange={handleSocialChange}
+            socialMediaValue={socialMediaValue}
+            onSocialMediaValueChange={setSocialMediaValue}
+            password={password}
+            onChangePassword={setPassword}
+          />
         )}
       </Box>
     </Paper>
