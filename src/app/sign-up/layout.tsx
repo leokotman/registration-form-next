@@ -5,10 +5,18 @@ import Image from 'next/image';
 
 const styles = {
   signUpLayout: {
-    height: '100vh',
+    minHeight: '100vh',
     display: 'flex',
-    justifyContent: 'center',
-    padding: '30px 56px',
+    flexDirection: {
+      lg: 'row',
+      xs: 'column',
+    },
+    alignItems: 'center',
+    padding: {
+      lg: '30px 56px',
+      md: 2,
+      xs: 1,
+    },
   },
   linkButton: {
     color: 'warning.main',
@@ -22,7 +30,16 @@ export default function SignUpLayout({
 }) {
   return (
     <Box sx={styles.signUpLayout}>
-      <Button sx={{ gap: 3, height: 'max-content' }}>
+      <Button
+        sx={{
+          gap: 3,
+          height: 'max-content',
+          alignSelf: {
+            lg: 'baseline',
+            xs: 'flex-start',
+          },
+        }}
+      >
         <Image
           src="/assets/icons/arrow-left.svg"
           width={15}
