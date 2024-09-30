@@ -34,6 +34,13 @@ const theme = createTheme({
         underline: 'none',
       },
     },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'var(--font-roboto)',
+        },
+      },
+    },
   },
 });
 
